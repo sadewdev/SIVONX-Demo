@@ -13,6 +13,8 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -80,7 +82,7 @@
         .card-animate { opacity: 0; transform: translateY(20px); animation: cardFadeIn 0.8s ease-out 0.2s forwards; }
         @keyframes cardFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* --- NEW (v4.0): Chat Pill Button Styles --- */
+        /* --- Chat Pill Button Styles (as before) --- */
         .floating-chat-pill {
             position: fixed;
             bottom: 2rem;
@@ -89,99 +91,106 @@
             cursor: pointer;
             transition: all 0.3s ease;
             animation: float 6s ease-in-out infinite;
-
-            /* Glassmorphism for the pill */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 9999px; /* Full pill shape */
+            border-radius: 9999px; 
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px 3px rgba(59, 130, 246, 0.2);
-
             display: flex;
             align-items: center;
-            /* Padding is handled by icon and text */
         }
-        .floating-chat-pill:hover {
-            transform: scale(1.05); /* Slightly bigger hover */
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 20px 7px rgba(59, 130, 246, 0.3);
-            animation-play-state: paused;
-        }
-        .chat-bubble-icon {
-            width: 3.5rem; /* 56px - smaller to fit INSIDE the pill */
-            height: 3.5rem; /* 56px */
-            /* padding: 0.25rem; */ /* Optional: if your icon needs space */
-            transition: all 0.3s ease;
-        }
-        .chat-bubble-text {
-            /* Text to show on desktop */
-            display: inline;
-            margin-left: 0.5rem;
-            margin-right: 1.5rem; /* More padding on the right */
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: white;
-            transition: all 0.3s ease;
-        }
+        .floating-chat-pill:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 20px 7px rgba(59, 130, 246, 0.3); animation-play-state: paused; }
+        .chat-bubble-icon { width: 3.5rem; height: 3.5rem; transition: all 0.3s ease; }
+        .chat-bubble-text { display: inline; margin-left: 0.5rem; margin-right: 1.5rem; font-size: 1.1rem; font-weight: 500; color: white; transition: all 0.3s ease; }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
 
-        /* --- NEW (v4.0): Chat Popup Styles (Unchanged from v3.0, but still needed) --- */
-        .chat-popup {
-            position: fixed;
-            bottom: 8.5rem; /* Positioned above the pill */
-            right: 2rem;
-            width: 350px;
-            z-index: 40;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1); /* "Lassana" animation */
-        }
-        .chat-popup.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* --- Chat Popup Styles (as before) --- */
+        .chat-popup { position: fixed; bottom: 8.5rem; right: 2rem; width: 350px; z-index: 40; opacity: 0; transform: translateY(20px); transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1); }
+        .chat-popup.active { opacity: 1; transform: translateY(0); }
         .chat-header { border-bottom: 1px solid rgba(255, 255, 255, 0.15); }
         .chat-input { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0.5rem; color: white; }
         .chat-input:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); }
         .lang-button { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.2s ease-in-out; }
         .lang-button:hover { background: rgba(255, 255, 255, 0.2); border-color: #3B82F6; }
 
-        /* --- NEW (v4.0): Mobile Responsive Chat --- */
+        /* --- RESPONSIVENESS FIXES (v5.1) --- */
         @media (max-width: 768px) {
-            .glass-card { padding: 1.5rem; margin: 1rem; }
+            .glass-card { padding: 1.5rem; }
             .gradient-text { font-size: 2.5rem; }
             .cta-button { padding: 1rem 2rem; font-size: 1rem; }
             .social-icon-btn { font-size: 1.25rem; }
+            .floating-chat-pill { bottom: 1rem; right: 1rem; padding: 0; }
+            .chat-bubble-icon { width: 4rem; height: 4rem; padding: 0; }
+            .chat-bubble-text { display: none; }
+            .chat-popup { width: calc(100vw - 2rem); right: 1rem; bottom: 6rem; }
+            .countdown-number { font-size: 2.5rem; }
+            .countdown-label { font-size: 0.75rem; }
+            #launch-container h2 { font-size: 1.5rem; }
+        }
+        
+        /* --- Launch/Countdown Container Styles (as before) --- */
+        #launch-container { width: 100%; max-width: 600px; text-align: center; padding: 2rem; }
+        .countdown-box { display: flex; justify-content: center; gap: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; }
+        .countdown-item { display: flex; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.2); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); min-width: 80px; }
+        .countdown-number { font-size: 3rem; font-weight: 800; font-family: 'Montserrat', sans-serif; line-height: 1; }
+        .countdown-label { font-size: 0.875rem; color: #A0A0A0; margin-top: 0.25rem; }
 
-            /* Pill Button Responsive */
-            .floating-chat-pill {
-                bottom: 1rem;
-                right: 1rem;
-                padding: 0; /* No padding on mobile, the icon IS the button */
-            }
-            .chat-bubble-icon {
-                width: 4rem; /* 64px - back to old size */
-                height: 4rem; /* 64px */
-                padding: 0;
-            }
-            .chat-bubble-text {
-                /* This hides the text on mobile */
-                display: none;
-            }
-            
-            /* Chat Popup Responsive (Unchanged from v3.0) */
-            .chat-popup {
-                width: calc(100vw - 2rem);
-                right: 1rem;
-                bottom: 6rem; /* 1rem bubble bottom + 4rem bubble height + 1rem gap */
-            }
+        /* --- Giveaway Modal Styles (as before) --- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 90;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        .modal-backdrop.active {
+            opacity: 1;
+        }
+        .giveaway-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            z-index: 100;
+            opacity: 0;
+            scale: 0.9;
+            transition: all 0.3s ease-out;
+        }
+        .giveaway-modal.active {
+            opacity: 1;
+            scale: 1;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <div class="flex items-center justify-center flex-grow p-4 md:p-8">
-        <div class="relative w-full max-w-2xl">
+    <div id="main-content-wrapper" class="flex items-center justify-center flex-grow p-4 md:p-8">
+
+        <div id="launch-container" class="glass-card card-animate">
+            <div id="countdown-section">
+                <h2 class="text-3xl font-bold">SIVONX is Launching!</h2>
+                <p class="text-lg text-gray-300 mt-2">We are going live on 11.11 at 11:11 AM (SLST)</p>
+                <div class="countdown-box">
+                    <div class="countdown-item"><span id="cd-hours" class="countdown-number">00</span><span class="countdown-label">Hours</span></div>
+                    <div class="countdown-item"><span id="cd-minutes" class="countdown-number">00</span><span class="countdown-label">Minutes</span></div>
+                    <div class="countdown-item"><span id="cd-seconds" class="countdown-number">00</span><span class="countdown-label">Seconds</span></div>
+                </div>
+                <p class="text-sm text-gray-400">Stay here at 11:11 AM for a special launch giveaway!</p>
+            </div>
+            
+            <div id="launched-section" class="hidden">
+                <h2 class="text-3xl font-bold gradient-text">SIVONX is LIVE! 🎉</h2>
+                <p class="text-lg text-gray-300 mt-2">Welcome to the future of Intelligent Digital Creations.</p>
+            </div>
+        </div>
+
+        <div id="main-card-wrapper" class="relative w-full max-w-2xl hidden">
             <div class="glass-card w-full text-center card-animate">
                 <header class="mb-8">
                     <img src="sivonx-logo.png" alt="Sivonx Logo" class="h-20 md:h-24 mx-auto"/>
@@ -199,27 +208,25 @@
                         <span class="tag-pill">Video Production</span>
                         <span class="tag-pill">Branding & Design</span>
                     </div>
-                    <a href="mailto:hi@sivonx.space" class="cta-button bg-blue-600 text-white py-4 px-10 rounded-full text-lg transition-all duration-300 hover:bg-blue-500 inline-flex items-center space-x-2">
+                    <a href="mailto:info@sivonx.space" class="cta-button bg-blue-600 text-white py-4 px-10 rounded-full text-lg transition-all duration-300 hover:bg-blue-500 inline-flex items-center space-x-2">
                         <span>Let's Build Together</span> <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </main>
                 <footer class="pt-8 border-t border-gray-100/10">
                     <p class="text-gray-400 mb-5 text-sm">Connect with us</p>
                     <div class="flex justify-center space-x-7">
-                        <a href="https://facebook.com/sivonx" target="_blank" class="social-icon-btn"><i class="fab fa-facebook-f"></i></a>
                         <a href="https://instagram.com/sivonx.ai" target="_blank" class="social-icon-btn"><i class="fab fa-instagram"></i></a>
+                        <a href="[YOUR_FB_PAGE_LINK]" target="_blank" class="social-icon-btn"><i class="fab fa-facebook-f"></i></a>
+                        <a href="[YOUR_LINKEDIN_LINK]" target="_blank" class="social-icon-btn"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </footer>
             </div>
         </div>
     </div>
 
-    <button id="chat-bubble" class="floating-chat-pill">
+    <button id="chat-bubble" class="floating-chat-pill hidden">
         <img src="3d-icon.png" alt="Sivonx Bot Icon" class="chat-bubble-icon" />
-        
-        <span class="chat-bubble-text">
-            Chat with Sivonx Bot
-        </span>
+        <span class="chat-bubble-text">Chat with Sivonx Bot</span>
     </button>
 
     <div id="chat-popup" class="chat-popup glass-card p-0 overflow-hidden">
@@ -227,7 +234,6 @@
             <h3 class="font-bold text-lg">Chat with SIVONX Bot</h3>
             <button id="close-chat" class="text-gray-400 hover:text-white transition-all text-3xl leading-none">&times;</button>
         </div>
-        
         <div id="chat-content" class="p-6 h-64 overflow-y-auto">
             <div id="step-name">
                 <label for="user-name" class="block text-sm font-medium mb-2">Welcome! What should we call you?</label>
@@ -246,6 +252,21 @@
         </div>
     </div>
     
+    <div id="giveaway-modal-backdrop" class="modal-backdrop hidden"></div>
+    <div id="giveaway-modal" class="giveaway-modal hidden">
+        <div class="glass-card text-center p-8 relative" style="background: linear-gradient(145deg, #1e3a8a, #6d28d9);">
+            <button id="close-giveaway-modal" class="absolute top-2 right-4 text-white/70 hover:text-white text-3xl leading-none">&times;</button>
+            
+            <h3 class="text-3xl font-bold">Congratulations! 🎁</h3>
+            
+            <p id="giveaway-text-modal" class="text-lg mt-2"></p>
+            
+            <p id="giveaway-code-modal" class="text-3xl font-bold mt-4 font-mono p-4 bg-black/20 rounded-lg border border-white/20"></p>
+            
+            <p class="text-xs mt-4 text-gray-200">Take a screenshot! Use this code on our future services.</p>
+        </div>
+    </div>
+    
     <footer class="main-footer text-center">
         <p class="text-gray-500 text-xs">
             &copy; <span id="currentYear"></span> Sivonx. All rights reserved.
@@ -255,31 +276,162 @@
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // --- Chat Bot Logic ---
+        // --- Select DOM Elements (Main) ---
+        const launchContainer = document.getElementById('launch-container');
+        const countdownSection = document.getElementById('countdown-section');
+        const launchedSection = document.getElementById('launched-section');
+        const mainCardWrapper = document.getElementById('main-card-wrapper');
+        const chatBubbleBtn = document.getElementById('chat-bubble');
+
+        // --- Select DOM Elements (Giveaway) ---
+        const giveawayModalBackdrop = document.getElementById('giveaway-modal-backdrop');
+        const giveawayModal = document.getElementById('giveaway-modal');
+        const closeGiveawayModal = document.getElementById('close-giveaway-modal');
+        
+        // !!! BUG FIX (v6.1): Changed Selectors !!!
+        const giveawayTextEl = document.getElementById('giveaway-text-modal');
+        const giveawayCodeEl = document.getElementById('giveaway-code-modal');
+
+
+        // --- Set Times (Sri Lanka Standard Time, GMT+5:30) ---
+        
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!! ORIGINAL LAUNCH TIME (11:11 AM)
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        const launchTime = new Date('2025-11-11T11:11:00+05:30').getTime();
+        const giveawayEndTime = new Date('2025-11-11T11:15:00+05:30').getTime();
+        const endOfDayTime = new Date('2025-11-11T23:59:59+05:30').getTime();
+
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const timeLeft = launchTime - now;
+
+            if (timeLeft > 0) {
+                // --- 1. COUNTDOWN PHASE ---
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+            } else if (now < endOfDayTime) {
+                // --- 2. LAUNCHED PHASE (Before Midnight) ---
+                clearInterval(timerInterval); 
+                countdownSection.classList.add('hidden');
+                launchedSection.classList.remove('hidden');
+                launchContainer.classList.add('hidden'); 
+                mainCardWrapper.classList.remove('hidden');
+                chatBubbleBtn.classList.remove('hidden');
+                runConfetti();
+                if (now < giveawayEndTime) {
+                    runGiveaway();
+                }
+            } else {
+                // --- 3. EVENT OVER PHASE (After Midnight) ---
+                clearInterval(timerInterval);
+                launchContainer.classList.add('hidden');
+                mainCardWrapper.classList.remove('hidden');
+                chatBubbleBtn.classList.remove('hidden');
+            }
+        }
+        function runConfetti() {
+            const duration = 5 * 1000;
+            const end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // --- NEW (v6.0): Helper function for dynamic codes ---
+        function generateRandomString(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // --- NEW (v6.0): Giveaway Logic Function (Updated) ---
+        function runGiveaway() {
+            if (localStorage.getItem('sivonxGiveawayAttempt')) { return; }
+            localStorage.setItem('sivonxGiveawayAttempt', 'true');
+
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // !!! ORIGINAL 15% CHANCE
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (Math.random() < 0.15) { // <-- 15% CHANCE
+                
+                const prizeRoll = Math.random();
+                let prizeValue = 0;
+                let prizeText = "";
+
+                if (prizeRoll < 0.07) { 
+                    prizeValue = 75;
+                    prizeText = "You won a 75% Discount Code!";
+                } else if (prizeRoll < 0.27) { 
+                    prizeValue = 25;
+                    prizeText = "You won a 25% Discount Code!";
+                } else { 
+                    prizeValue = 8;
+                    prizeText = "You won an 8% Discount Code!";
+                }
+                
+                // NEW: Generate dynamic code
+                const randomChars = generateRandomString(2); // e.g., "SA"
+                const prizeCode = `SNX${randomChars}${prizeValue}`; // e.g., "SNXSA75"
+
+                // !!! BUG FIX (v6.1): Update modal content using correct IDs
+                giveawayTextEl.textContent = prizeText;
+                giveawayCodeEl.textContent = prizeCode;
+                
+                // NEW: Show the modal
+                giveawayModalBackdrop.classList.remove('hidden');
+                giveawayModal.classList.remove('hidden');
+                setTimeout(() => { 
+                    giveawayModalBackdrop.classList.add('active');
+                    giveawayModal.classList.add('active');
+                }, 10);
+            }
+        }
+        
+        // NEW (v6.0): Close Modal Listener
+        closeGiveawayModal.addEventListener('click', () => {
+             giveawayModal.classList.remove('active');
+             giveawayModalBackdrop.classList.remove('active');
+             setTimeout(() => {
+                giveawayModalBackdrop.classList.add('hidden');
+                giveawayModal.classList.add('hidden');
+             }, 300);
+        });
+        
+        updateTimer();
+    </script>
+    
+    <script>
         const chatBubble = document.getElementById('chat-bubble');
         const chatPopup = document.getElementById('chat-popup');
         const closeChat = document.getElementById('close-chat');
-        
         const stepName = document.getElementById('step-name');
         const stepLang = document.getElementById('step-lang');
         const stepMsg = document.getElementById('step-msg');
-        
         const userNameInput = document.getElementById('user-name');
         const nextNameBtn = document.getElementById('next-name');
         const langButtons = document.querySelectorAll('.lang-button');
         const welcomeMsg = document.getElementById('welcome-msg');
-
         let db;
         let tempName = "";
-        
-        // Language Messages
         const messages = {
             en: { hello: "Hello", soon: "The live chat facility is coming soon! We'll be in touch." },
             si: { hello: "හෙලෝ", soon: "සජීවී චැට් පහසුකම ඉතා ඉක්මනින් පැමිණේ! අපි ඔබව සම්බන්ධ කර ගන්නම්." },
             ta: { hello: "வணக்கம்", soon: "நேரடி அரட்டை வசதி விரைவில்! நாங்கள் உங்களைத் தொடர்புகொள்வோம்." }
         };
-
-        // 1. Initialize IndexDB
         const request = indexedDB.open("SivonxUserDB", 1);
         request.onupgradeneeded = (e) => {
             const db = e.target.result;
@@ -289,12 +441,8 @@
         };
         request.onsuccess = (e) => { db = e.target.result; checkUser(); };
         request.onerror = (e) => { console.error("IndexDB Error:", e.target.error); };
-
-        // 2. Chat Bubble Toggle
         chatBubble.addEventListener('click', () => { chatPopup.classList.toggle('active'); });
         closeChat.addEventListener('click', () => { chatPopup.classList.remove('active'); });
-
-        // 3. Check for Existing User
         function checkUser() {
             if (!db) return;
             const transaction = db.transaction(['user'], 'readonly');
@@ -307,8 +455,6 @@
                 }
             };
         }
-
-        // 4. Handle Name Input
         nextNameBtn.addEventListener('click', () => {
             const name = userNameInput.value.trim();
             if (name) {
@@ -318,8 +464,6 @@
             }
         });
         userNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { nextNameBtn.click(); } });
-
-        // 5. Handle Language Selection
         langButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const lang = button.getAttribute('data-lang');
@@ -327,16 +471,12 @@
                 showFinalMessage(tempName, lang);
             });
         });
-
-        // 6. Save User to IndexDB
         function saveUser(name, lang) {
             if (!db) return;
             const transaction = db.transaction(['user'], 'readwrite');
             const store = transaction.objectStore('user');
             store.put({ id: 'userProfile', name: name, lang: lang });
         }
-
-        // 7. Show Final Message
         function showFinalMessage(name, lang) {
             stepName.classList.add('hidden');
             stepLang.classList.add('hidden');
